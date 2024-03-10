@@ -21,7 +21,8 @@ export const UserProvider = ({ children }) => {
     fetchUsers();
   }, []);
 
-  const createUser = async (userData) => { //useData comes from await createUser({ name, lastname, email, website }); in UserForm
+  const createUser = async (userData) => {
+    //useData comes from await createUser({ name, lastname, email, website }); in UserForm
     try {
       const response = await fetch('http://localhost:3000/users', {
         method: 'POST',
@@ -31,7 +32,10 @@ export const UserProvider = ({ children }) => {
       if (!response.ok) throw new Error('Failed to create user');
 
       const newUser = await response.json();
+      // console.log('Creating user with data:', userData);
       setUserList((prevUserList) => [...prevUserList, newUser]);
+
+      // console.log('New user created:', newUser);
     } catch (error) {
       console.error('Error creating user:', error);
     }

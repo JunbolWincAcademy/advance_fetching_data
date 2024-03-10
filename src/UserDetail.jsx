@@ -5,6 +5,7 @@ import { Box, Text } from '@chakra-ui/react';
 export const UserDetail = () => {
   const { selectedUser } = useUserContext();
   const [userDetails, setUserDetails] = useState(null);
+  console.log('Rendering details for:', selectedUser);
 
   useEffect(() => {
     /*🚩before it was like this (user) useEffect arrow function never takes any parameter: 
@@ -15,6 +16,7 @@ export const UserDetail = () => {
     
     */
     let ignore = false;
+    console.log('Rendering details for:', selectedUser);
 
     const fetchUserDetails = async () => {
       if (!selectedUser) return;
@@ -46,6 +48,7 @@ export const UserDetail = () => {
         Name:
         {selectedUser.name}
       </Text>
+
       <Text>
         Last Name:
         {selectedUser.lastname}
@@ -53,6 +56,7 @@ export const UserDetail = () => {
       <Text>Email: {selectedUser.email}</Text>
       <Text>Website: {selectedUser.website}</Text>
       <Text>Company: {selectedUser.company.name}</Text>
+
       {/* Display additional user details fetched */}
     </Box>
   );

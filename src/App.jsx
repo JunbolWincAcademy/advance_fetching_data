@@ -34,7 +34,7 @@ export const App = () => {
   return (
     <UserProvider>
       <div className="App">
-        <h1>User List</h1>
+        <Heading>User List</Heading>
         <UserForm />
         <UserList /> {/* Now rendering UserList here */}
         <UserDetail />
