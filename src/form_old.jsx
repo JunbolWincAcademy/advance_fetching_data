@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useUserContext } from './UserContext';
+import { useUserContext } from './UserContext'; // Import the context hook
 import { Input, Button } from '@chakra-ui/react';
 
 export const UserForm = () => {
@@ -9,34 +9,30 @@ export const UserForm = () => {
   const [email, setEmail] = useState('');
   const [website, setWebsite] = useState('');
   const [companyName, setCompanyName] = useState('');
-  const [postTitle, setPostTitle] = useState('');
-  const [postBody, setPostBody] = useState('');
 
   const { createUser } = useUserContext(); // Use context to access createUser
 
-  // Reset form fields
+  // Reset form fields function
   const resetFormFields = () => {
     setName('');
     setLastName('');
     setEmail('');
     setWebsite('');
     setCompanyName('');
-    setPostTitle('');
-    setPostBody('');
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    // Regex for validating name: allows letters and spaces but not only spaces
+    // Validation for names to ensure they contain only letters and spaces
     const nameRegex = /^[A-Za-z]+(?: [A-Za-z]+)*$/;
     if (!nameRegex.test(name) || !nameRegex.test(lastname)) {
       alert('Please enter a valid name (letters only, first and last name required).');
       return;
     }
 
-    // Assuming createUser is correctly defined and accessible
     try {
+      // Create user object and invoke createUser
       await createUser({
         name,
         lastname,
@@ -45,18 +41,11 @@ export const UserForm = () => {
         company: {
           name: companyName,
         },
-        // Assuming you have a mechanism to handle this in your backend
-        posts: [
-          {
-            title: postTitle,
-            body: postBody,
-          },
-        ],
       });
+      // Reset form fields after submission
       resetFormFields();
     } catch (error) {
       console.error('Error creating user:', error);
-      // Handle the error appropriately
     }
   };
 
@@ -67,8 +56,6 @@ export const UserForm = () => {
       <Input mb="1rem" type="email" required placeholder="Email" value={email} onChange={(e) => setEmail(e.target.value)} />
       <Input mb="2rem" type="url" required placeholder="Website" value={website} onChange={(e) => setWebsite(e.target.value)} />
       <Input mb="2rem" type="text" required placeholder="Company Name" value={companyName} onChange={(e) => setCompanyName(e.target.value)} />
-      <Input mb="1rem" type="text" required placeholder="Post Title" value={postTitle} onChange={(e) => setPostTitle(e.target.value)} />
-      <Input mb="1rem" type="text" required placeholder="Post Body" value={postBody} onChange={(e) => setPostBody(e.target.value)} />
       <Button mb="2rem" mr="2rem" type="submit">
         Add User
       </Button>

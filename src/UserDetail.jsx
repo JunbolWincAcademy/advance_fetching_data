@@ -1,39 +1,52 @@
 import React, { useEffect, useState } from 'react';
 import { useUserContext } from './UserContext';
-import { Box, Text } from '@chakra-ui/react';
+import { Box, Text, Button } from '@chakra-ui/react';
 
 export const UserDetail = () => {
-  const { selectedUser } = useUserContext();
+  const { selectedUser, deletePost, userPosts,setUserPosts } = useUserContext();
   const [userDetails, setUserDetails] = useState(null);
-  console.log('Rendering details for:', selectedUser);
+  // const [posts, setPosts] = useState([]); //  here was the big 🐞
 
   useEffect(() => {
-    /*🚩before it was like this (user) useEffect arrow function never takes any parameter: 
-    Adding 'user' or any other argument directly inside the parentheses of the callback function passed to useEffect is incorrect because the useEffect hook is designed to accept a specific function signature that does not include parameters. Here's the fundamental reason why it's wrong:
-    Function Signature: The useEffect hook expects its first argument to be a function that does not take any parameters. This function is called an "effect" function. The design of React's hooks API is such that this effect function is executed by React itself, which does not pass any arguments to it. Therefore, defining parameters for this function does not align with how React intends it to be used.
-
-    Scope and Access to Variables: React hooks, including useEffect, are designed to work within the functional component's scope. This means that any props or state variables you want to access within useEffect are already accessible directly by name; you don't need to pass them as parameters. For example, if user is a prop or state variable in your component, you can directly use user inside the useEffect function without needing to list it as a parameter.
-    
-    */
     let ignore = false;
-    console.log('Rendering details for:', selectedUser);
 
+    // Fetch user details
     const fetchUserDetails = async () => {
       if (!selectedUser) return;
 
       try {
-        const response = await fetch(`http://localhost:3000/users/${selectedUser.id}`);
-        //❌it was like this before: const response = await fetch(`http://some-api/user-details/${selectedUser.id}`);
+        const userDetailsResponse = await fetch(`http://localhost:3000/users/${selectedUser.id}`);
         if (!ignore) {
-          const data = await response.json(); // 🚩 forgot to Parse the JSON response
-          setUserDetails(data);
+          const userDetailsData = await userDetailsResponse.json();
+          setUserDetails(userDetailsData);
         }
       } catch (error) {
         console.error('Failed to fetch user details:', error);
       }
     };
 
+ 
+    // Fetch user posts
+    const fetchPosts = async () => {
+      if (!selectedUser) return;
+
+      try {
+        const postsResponse = await fetch(`http://localhost:3000/users/${selectedUser.id}/posts`);
+
+        if (!ignore) {
+          const postsData = await postsResponse.json();
+          console.log('FIRST LOG Fetched postsData variable:', postsData);
+          // setPosts(postsData); //here was the big 🐞
+          setUserPosts(postsData);
+        }
+     
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      }
+    };
+
     fetchUserDetails();
+    fetchPosts(); // ✅ Call to fetch posts
 
     return () => {
       ignore = true;
@@ -44,20 +57,33 @@ export const UserDetail = () => {
 
   return (
     <Box border="1px" borderColor="gray.200" p="4" borderRadius="md">
-      <Text>
-        Name:
-        {selectedUser.name}
-      </Text>
-
-      <Text>
-        Last Name:
-        {selectedUser.lastname}
-      </Text>
+      <Text>Name:{selectedUser.name}</Text>
+      <Text>Last Name:{selectedUser.lastname}</Text>
       <Text>Email: {selectedUser.email}</Text>
       <Text>Website: {selectedUser.website}</Text>
-      <Text>Company: {selectedUser.company.name}</Text>
-
-      {/* Display additional user details fetched */}
+      {selectedUser.company && <Text>Company: {selectedUser.company.name}</Text>}
+      {/* Display user posts */}
+      {userPosts.length > 0 && (//it was posts.length
+        <>
+          <Text mt="4" mb="2" fontWeight="bold">
+            Posts:
+          </Text>
+          {userPosts.map((post) => (//it was like posts.map(())... here was the big 🐞
+            <Box key={post.id} mb="2">
+              <Text fontWeight="bold">{post.title}</Text>
+              <Text>{post.body}</Text>
+              <Button
+                fontWeight="bold"
+                onClick={() => {
+                  deletePost(post.id);
+                }}
+              >
+                Delete
+              </Button>
+            </Box>
+          ))}
+        </>
+      )}
     </Box>
   );
 };
