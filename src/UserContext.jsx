@@ -2,7 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const UserContext = createContext();
 
-export const useUserContext = () => useContext(UserContext);
+export const useUserContext = () => useContext(UserContext); // This is the custom HOOK:❗
 
 export const UserProvider = ({ children }) => {
   const [userList, setUserList] = useState([]);
@@ -111,9 +111,7 @@ export const UserProvider = ({ children }) => {
     }
   };
 
-  useEffect(() => {
-
-  }, [userPosts]);
+  useEffect(() => {}, [userPosts]);
 
   return (
     <UserContext.Provider
