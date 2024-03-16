@@ -2,15 +2,14 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 
 const UserContext = createContext();
 
- // This is the custom HOOK:❗ see the use of the prefix 'use'
- export const useUserContext = () => {
+// This is the custom HOOK:❗ see the use of the prefix 'use'
+export const useUserContext = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error('useUserContext must be used within a UserProvider');
+    throw new Error('useUserContext must be used within a UserContextProvider');
   }
   return context;
 };
-
 
 export const UserProvider = ({ children }) => {
   const [userList, setUserList] = useState([]);
