@@ -26,7 +26,7 @@ export const UserProvider = ({ children }) => {
         console.error('Error fetching users:', error);
       }
     };
-    fetchUsers();
+    fetchUsers(); //In summary, while modern JavaScript practices do encourage the use of const and limiting variable scope, your scenario requires newUser to be accessible in multiple block scopes within the same function, hence the initial let newUser; declaration. This approach ensures that newUser is accessible wherever it's needed within the function, despite the initial value assignment occurring inside a try block.
   }, []);
 
   const createUser = async (userData) => {
